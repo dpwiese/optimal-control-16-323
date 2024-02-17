@@ -4,12 +4,11 @@ SRC := $(CWD)/src
 OUT := $(CWD)/out
 BIB := $(CWD)/bib
 
-# Set engine (works with luatex, unknown about xelatex or pdflatex)
+# Set engine (works with pdflatex, unknown about xelatex or luatex)
 ENGINE := pdflatex
 
 # Every source .tex file should correspond to a .pdf output file
-SRC_FILES := $(wildcard $(SRC)/*.tex) $(wildcard $(SRC)/*/*.tex)
-# OUT_FILES := $(subst src,out,$(subst .tex,.pdf, $(SRC_FILES)))
+SRC_FILES := $(wildcard $(SRC)/*.tex)
 
 .PHONY: pdf clean lint
 .SILENT: pdf clean lint
@@ -24,16 +23,16 @@ $(OUT):
 
 $(OUT)/%.pdf: $(SRC)/%.tex $(BIB)/%.bib | $(OUT)
 	@mkdir -p $(dir $@) \
-	&& cd $(SRC) \
+	&& cd $(dir $<) \
 	&& openout_any=a $(ENGINE) --jobname=$(notdir $(basename $@)) --output-directory=$(dir $@) --file-line-error --shell-escape --synctex=1 $< \
-	&& cd $(OUT) && openout_any=a bibtex $(notdir $(basename $@)) && cd $(SRC) \
+	&& cd $(dir $@) && openout_any=a bibtex $(notdir $(basename $@)) && cd $(dir $<) \
 	&& openout_any=a $(ENGINE) --jobname=$(notdir $(basename $@)) --output-directory=$(dir $@) --file-line-error --shell-escape --synctex=1 $< \
 	&& openout_any=a $(ENGINE) --jobname=$(notdir $(basename $@)) --output-directory=$(dir $@) --file-line-error --shell-escape --synctex=1 $< \
 	&& cd ..
 
 $(OUT)/%.pdf: $(SRC)/%.tex | $(OUT)
 	@mkdir -p $(dir $@) \
-	&& cd $(SRC) \
+	&& cd $(dir $<) \
 	&& openout_any=a $(ENGINE) --jobname=$(notdir $(basename $@)) --output-directory=$(dir $@) --file-line-error --shell-escape --synctex=1 $< \
 	&& openout_any=a $(ENGINE) --jobname=$(notdir $(basename $@)) --output-directory=$(dir $@) --file-line-error --shell-escape --synctex=1 $< \
 	&& cd ..

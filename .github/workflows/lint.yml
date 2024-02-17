@@ -21,4 +21,4 @@ jobs:
 
       # Runs ChkTeX
       - name: Run ChkTeX
-        run: chktex  -I0 -l ./src/.chktexrc ./src/*/*.tex ./src/*.tex
+        run: chktex  -I0 -l ./src/.chktexrc ./src/*.tex
